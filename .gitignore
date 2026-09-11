@@ -1,0 +1,52 @@
+# .env files contain environment-specific secrets — per spec section 11.2
+.env
+.env.dev
+.env.staging
+.env.prod
+
+# Orchestration tooling
+.intent/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# Flutter/Dart build artifacts
+.dart_tool/
+.buildconfig/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+ios/Flutter/flutter_export_environment.sh
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.*
+
+# Coverage
+coverage/
+*.lcov
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Android
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/local.properties
+android/key.properties
+android/app/app-release.aab
+android/app/app-release.apk
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
