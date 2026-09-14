@@ -62,5 +62,23 @@
   "version": "الإصدار",
   "changeLanguage": "تغيير اللغة",
   "account": "الحساب",
-  "general": "عام"
+  "general": "عام",
+  "emailRequired": "البريد الإلكتروني مطلوب",
+  "emailInvalid": "أدخل بريدا إلكترونيا صالحا",
+  "passwordRequired": "كلمة المرور مطلوبة",
+  "passwordWeak": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+  "fieldRequired": "{fieldName} مطلوب",
+  "@fieldRequired": {
+    "description": "Required-field message with field name parameter",
+    "placeholders": {
+      "fieldName": {
+        "type": "String",
+        "example": "Name"
+      }
+    }
+  },
+  "phoneRequired": "رقم الهاتف مطلوب",
+  "phoneInvalid": "أدخل رقم هاتف صالحا",
+  "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+  "profileUpdated": "تم تحديث الملف الشخصي"
 }

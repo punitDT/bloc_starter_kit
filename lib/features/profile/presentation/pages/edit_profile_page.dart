@@ -4,8 +4,11 @@ import 'package:bloc_starter_kit/core/utils/helpers/validators.dart';
 import 'package:bloc_starter_kit/core/widgets/buttons/primary_button.dart';
 import 'package:bloc_starter_kit/core/widgets/inputs/app_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+/// Edit-profile form screen.
 class EditProfilePage extends StatefulWidget {
+  /// Creates the edit-profile page.
   const EditProfilePage({super.key});
 
   @override
@@ -29,9 +32,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void _save() {
     if (!_formKey.currentState!.validate()) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated')),
+      SnackBar(content: Text(context.l10n.profileUpdated)),
     );
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   @override
@@ -50,8 +53,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   controller: _nameController,
                   label: context.l10n.profileName,
                   prefixIcon: const Icon(Icons.person_outline),
-                  validator: (value) =>
-                      Validators.validateRequired(value, fieldName: 'Name'),
+                  validator: (value) => Validators.validateRequired(
+                    value,
+                    fieldName: context.l10n.profileName,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 AppTextField(
@@ -59,7 +64,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   label: context.l10n.profilePhone,
                   keyboardType: TextInputType.phone,
                   prefixIcon: const Icon(Icons.phone_outlined),
-                  validator: Validators.validatePhone,
+                  validator: (value) => Validators.validatePhone(
+                    value,
+                    requiredMessage: context.l10n.phoneRequired,
+                    invalidMessage: context.l10n.phoneInvalid,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 AppTextField(

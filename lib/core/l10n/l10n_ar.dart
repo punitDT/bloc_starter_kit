@@ -199,4 +199,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get general => 'عام';
+
+  @override
+  String get emailRequired => 'البريد الإلكتروني مطلوب';
+
+  @override
+  String get emailInvalid => 'أدخل بريدا إلكترونيا صالحا';
+
+  @override
+  String get passwordRequired => 'كلمة المرور مطلوبة';
+
+  @override
+  String get passwordWeak => 'يجب أن تكون كلمة المرور 8 أحرف على الأقل';
+
+  @override
+  String fieldRequired(String fieldName) {
+    return '$fieldName مطلوب';
+  }
+
+  @override
+  String get phoneRequired => 'رقم الهاتف مطلوب';
+
+  @override
+  String get phoneInvalid => 'أدخل رقم هاتف صالحا';
+
+  @override
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get profileUpdated => 'تم تحديث الملف الشخصي';
 }

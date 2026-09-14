@@ -1,4 +1,5 @@
 import 'package:bloc_starter_kit/core/l10n/l10n.dart';
+import 'package:bloc_starter_kit/core/network/network_failure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -29,10 +30,27 @@ abstract final class L10nSetup {
 }
 
 extension BuildContextL10nX on BuildContext {
-  AppLocalizations get l10n => AppLocalizations.of(this);
+  AppLocalizations get l10n {
+    final localizations =
+        AppLocalizations.of(this);
+    return localizations;
+  }
 
   ThemeData get theme => Theme.of(this);
   ColorScheme get colorScheme => theme.colorScheme;
   TextTheme get textTheme => theme.textTheme;
   bool get isDark => theme.brightness == Brightness.dark;
+}
+
+extension AppLocalizationsFailureX on AppLocalizations {
+  /// Localized user-facing message for a domain [Failure].
+  String failureMessage(Failure failure) => switch (failure) {
+        NetworkFailure() => errorNetwork,
+        TimeoutFailure() => errorTimeout,
+        UnauthorizedFailure() => errorUnauthorized,
+        ValidationFailure() => errorValidation,
+        NotFoundFailure() => pageNotFoundMessage,
+        CacheFailure() => errorGeneral,
+        ServerFailure() => errorServer,
+      };
 }

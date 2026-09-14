@@ -1,11 +1,16 @@
 import 'package:bloc_starter_kit/core/l10n/l10n_setup.dart';
+import 'package:bloc_starter_kit/core/router/routes.dart';
 import 'package:bloc_starter_kit/core/theme/app_spacing.dart';
 import 'package:bloc_starter_kit/core/widgets/buttons/primary_button.dart';
 import 'package:bloc_starter_kit/features/profile/domain/entities/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// Profile overview screen.
+///
+/// Shows demo profile data with localized labels.
 class ProfilePage extends StatelessWidget {
+  /// Creates the profile page.
   const ProfilePage({super.key});
 
   static const demoProfile = Profile(
@@ -57,14 +62,14 @@ class ProfilePage extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.email_outlined),
                     title: Text(context.l10n.email),
-                    subtitle: const Text('demo@example.com'),
+                    subtitle: Text(demoProfile.email),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
             PrimaryButton(
-              onPressed: () => context.goNamed('editProfile'),
+              onPressed: () => context.goNamed(RouteNames.editProfile),
               label: context.l10n.editProfile,
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:bloc_starter_kit/core/l10n/l10n_setup.dart';
+import 'package:bloc_starter_kit/core/router/routes.dart';
 import 'package:bloc_starter_kit/core/theme/app_spacing.dart';
 import 'package:bloc_starter_kit/core/utils/extensions/string_ext.dart';
 import 'package:bloc_starter_kit/core/widgets/buttons/primary_button.dart';
@@ -24,15 +25,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Password reset link sent to ${_emailController.text}',
+          context.l10n.profileUpdated,
         ),
       ),
     );
-    context.goNamed('login');
+    context.goNamed(RouteNames.login);
   }
 
   @override
@@ -61,7 +63,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Enter your email and we will send you a reset link.',
+                  context.l10n.noInternetMessage,
                   textAlign: TextAlign.center,
                   style: context.textTheme.bodyMedium,
                 ),
@@ -73,9 +75,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   prefixIcon: const Icon(Icons.email_outlined),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Email is required';
+                      return context.l10n.emailRequired;
                     }
-                    if (!value.isEmail) return 'Enter a valid email';
+                    if (!value.isEmail) return context.l10n.emailInvalid;
                     return null;
                   },
                 ),

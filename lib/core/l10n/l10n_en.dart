@@ -201,4 +201,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get general => 'General';
+
+  @override
+  String get emailRequired => 'Email is required';
+
+  @override
+  String get emailInvalid => 'Enter a valid email';
+
+  @override
+  String get passwordRequired => 'Password is required';
+
+  @override
+  String get passwordWeak => 'Password must be at least 8 characters';
+
+  @override
+  String fieldRequired(String fieldName) {
+    return '$fieldName is required';
+  }
+
+  @override
+  String get phoneRequired => 'Phone is required';
+
+  @override
+  String get phoneInvalid => 'Enter a valid phone number';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get profileUpdated => 'Profile updated';
 }

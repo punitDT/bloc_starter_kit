@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 /// Global BLoC observer that routes all BLoC activity to Talker.
@@ -7,11 +10,18 @@ class AppBlocObserver extends BlocObserver {
 
   final Talker _talker;
 
+  String _sanitize(Object? state) {
+    final text = '$state';
+    // Avoid logging PII (emails, tokens) at verbose level.
+    if (text.contains('@') || text.contains('token')) return '[redacted PII]';
+    return text.length > 500 ? '${text.substring(0, 500)}…' : text;
+  }
+
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
     _talker.debug('${bloc.runtimeType} state changed: '
-        '${change.currentState} → ${change.nextState}');
+        '${_sanitize(change.currentState)} → ${_sanitize(change.nextState)}');
   }
 
   @override
@@ -27,5 +37,6 @@ class AppBlocObserver extends BlocObserver {
   void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
     _talker.error('${bloc.runtimeType} error: $error', error, stackTrace);
+    unawaited(Sentry.captureException(error, stackTrace: stackTrace));
   }
 }

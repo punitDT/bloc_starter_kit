@@ -10,7 +10,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 class OnboardingPage extends StatefulWidget {
-  const OnboardingPage({super.key});
+  const OnboardingPage({super.key, Preferences? preferences})
+      : _preferences = preferences;
+
+  final Preferences? _preferences;
 
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
@@ -46,7 +49,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   Future<void> _finishOnboarding() async {
-    final preferences = getIt<Preferences>();
+    final preferences = widget._preferences ?? getIt<Preferences>();
     await preferences.setOnboardingDone(value: true);
     if (mounted) context.go(RoutePaths.home);
   }

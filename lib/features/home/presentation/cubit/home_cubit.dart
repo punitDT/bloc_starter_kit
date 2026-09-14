@@ -64,16 +64,25 @@ class HomeCubit extends HydratedCubit<HomeState> {
 
   @override
   HomeState? fromJson(Map<String, dynamic> json) {
-    return HomeState(
-      themeMode: ThemeMode.values.firstWhere(
-        (mode) => mode.name == json['themeMode'],
-        orElse: () => ThemeMode.system,
-      ),
+    final themeMode = ThemeMode.values.firstWhere(
+      (mode) => mode.name == json['themeMode'],
+      orElse: () => ThemeMode.system,
     );
+    final localeCode = json['locale'] as String?;
+    final locale = localeCode == null
+        ? null
+        : L10nSetup.supportedLocales.firstWhere(
+            (supported) => supported.languageCode == localeCode,
+            orElse: () => L10nSetup.en,
+          );
+    return HomeState(themeMode: themeMode, locale: locale);
   }
 
   @override
   Map<String, dynamic>? toJson(HomeState state) {
-    return {'themeMode': state.themeMode.name};
+    return {
+      'themeMode': state.themeMode.name,
+      'locale': state.locale?.languageCode,
+    };
   }
 }

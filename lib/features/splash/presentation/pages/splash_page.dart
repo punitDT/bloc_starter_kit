@@ -9,7 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+  const SplashPage({super.key, Preferences? preferences})
+      : _preferences = preferences;
+
+  final Preferences? _preferences;
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -25,7 +28,7 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _navigate() async {
     await Future<void>.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    final preferences = getIt<Preferences>();
+    final preferences = widget._preferences ?? getIt<Preferences>();
     context.go(
       preferences.onboardingDone ? RoutePaths.home : RoutePaths.onboarding,
     );

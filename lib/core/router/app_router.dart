@@ -1,4 +1,7 @@
+import 'package:bloc_starter_kit/core/di/injection.dart';
+import 'package:bloc_starter_kit/core/router/go_router_refresh.dart';
 import 'package:bloc_starter_kit/core/router/routes.dart';
+import 'package:bloc_starter_kit/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:bloc_starter_kit/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:bloc_starter_kit/features/auth/presentation/pages/login_page.dart';
 import 'package:bloc_starter_kit/features/auth/presentation/pages/register_page.dart';
@@ -14,91 +17,133 @@ import 'package:bloc_starter_kit/features/settings/presentation/pages/settings_p
 import 'package:bloc_starter_kit/features/splash/presentation/pages/splash_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
-@singleton
+/// Declarative router (go_router).
+///
+/// No `Navigator.push` calls are allowed elsewhere. Guards live in
+/// `redirect`, tab state in `StatefulShellRoute.indexedStack`.
+@lazySingleton
 final class AppRouter {
-  AppRouter();
+  /// Creates the router with injected auth state for testability.
+  AppRouter(this._authCubit);
+
+  final AuthCubit _authCubit;
 
   late final GoRouter _router = GoRouter(
     initialLocation: RoutePaths.splash,
-    observers: const [],
+    observers: [TalkerRouteObserver(getIt<Talker>())],
+    refreshListenable: GoRouterRefreshStream(_authCubit.stream),
+    redirect: (context, state) {
+      final authState = _authCubit.state;
+      final isAuthenticated = authState is AuthAuthenticated;
+      final location = state.uri.path;
+
+      if (!isAuthenticated &&
+          RoutePaths.isProtected(location) &&
+          !RoutePaths.isAuth(location)) {
+        return AuthRoutes.login;
+      }
+      if (isAuthenticated && RoutePaths.isAuth(location)) {
+        return RoutePaths.home;
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: RoutePaths.splash,
-        name: 'splash',
+        name: RouteNames.splash,
         builder: (context, state) => const SplashPage(),
       ),
       GoRoute(
         path: RoutePaths.onboarding,
-        name: 'onboarding',
+        name: RouteNames.onboarding,
         builder: (context, state) => const OnboardingPage(),
       ),
-      ShellRoute(
-        builder: (context, state, child) => HomeShell(child: child),
-        routes: [
-          GoRoute(
-            path: RoutePaths.home,
-            name: 'home',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: HomePage(),
-            ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            HomeShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.home,
+                name: RouteNames.home,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: HomePage(),
+                ),
+              ),
+            ],
           ),
-          GoRoute(
-            path: RoutePaths.profile,
-            name: 'profile',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: ProfilePage(),
-            ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.notifications,
+                name: RouteNames.notifications,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: NotificationsPage(),
+                ),
+              ),
+            ],
           ),
-          GoRoute(
-            path: RoutePaths.settings,
-            name: 'settings',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: SettingsPage(),
-            ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.profile,
+                name: RouteNames.profile,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: ProfilePage(),
+                ),
+              ),
+            ],
           ),
-          GoRoute(
-            path: RoutePaths.notifications,
-            name: 'notifications',
-            pageBuilder: (context, state) => const NoTransitionPage(
-              child: NotificationsPage(),
-            ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RoutePaths.settings,
+                name: RouteNames.settings,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: SettingsPage(),
+                ),
+              ),
+            ],
           ),
         ],
       ),
       GoRoute(
         path: AuthRoutes.login,
-        name: 'login',
+        name: RouteNames.login,
         builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
         path: AuthRoutes.register,
-        name: 'register',
+        name: RouteNames.register,
         builder: (context, state) => const RegisterPage(),
       ),
       GoRoute(
         path: AuthRoutes.forgotPassword,
-        name: 'forgotPassword',
+        name: RouteNames.forgotPassword,
         builder: (context, state) => const ForgotPasswordPage(),
       ),
       GoRoute(
         path: ProfileRoutes.editProfile,
-        name: 'editProfile',
+        name: RouteNames.editProfile,
         builder: (context, state) => const EditProfilePage(),
       ),
       GoRoute(
         path: ErrorRoutes.notFound,
-        name: 'notFound',
+        name: RouteNames.notFound,
         builder: (context, state) => const NotFoundPage(),
       ),
       GoRoute(
         path: ErrorRoutes.noInternet,
-        name: 'noInternet',
+        name: RouteNames.noInternet,
         builder: (context, state) => const NoInternetPage(),
       ),
     ],
     errorBuilder: (context, state) => const NotFoundPage(),
   );
 
+  /// Exposes the configured router.
   GoRouter config() => _router;
 }

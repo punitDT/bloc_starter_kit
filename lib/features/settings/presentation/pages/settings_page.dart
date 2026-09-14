@@ -1,12 +1,26 @@
 import 'package:bloc_starter_kit/core/l10n/l10n_setup.dart';
+import 'package:bloc_starter_kit/core/router/routes.dart';
 import 'package:bloc_starter_kit/core/widgets/buttons/primary_button.dart';
 import 'package:bloc_starter_kit/features/home/presentation/cubit/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final ValueNotifier<bool> _notificationsEnabled = ValueNotifier(true);
+
+  @override
+  void dispose() {
+    _notificationsEnabled.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,17 +94,23 @@ class SettingsPage extends StatelessWidget {
           ),
           const Divider(),
           _SectionHeader(title: context.l10n.notifications),
-          ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: Text(context.l10n.notifications),
-            trailing: const Switch(value: true, onChanged: null),
+          ValueListenableBuilder<bool>(
+            valueListenable: _notificationsEnabled,
+            builder: (context, enabled, _) => ListTile(
+              leading: const Icon(Icons.notifications_outlined),
+              title: Text(context.l10n.notifications),
+              trailing: Switch(
+                value: enabled,
+                onChanged: (value) => _notificationsEnabled.value = value,
+              ),
+            ),
           ),
           const Divider(),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: PrimaryButton(
-              onPressed: () => context.go('/auth/login'),
+              onPressed: () => context.go(AuthRoutes.login),
               label: context.l10n.login,
             ),
           ),

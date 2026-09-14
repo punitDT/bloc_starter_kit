@@ -68,5 +68,23 @@
   "version": "Version",
   "changeLanguage": "Change Language",
   "account": "Account",
-  "general": "General"
+  "general": "General",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Enter a valid email",
+  "passwordRequired": "Password is required",
+  "passwordWeak": "Password must be at least 8 characters",
+  "fieldRequired": "{fieldName} is required",
+  "@fieldRequired": {
+    "description": "Required-field message with field name parameter",
+    "placeholders": {
+      "fieldName": {
+        "type": "String",
+        "example": "Name"
+      }
+    }
+  },
+  "phoneRequired": "Phone is required",
+  "phoneInvalid": "Enter a valid phone number",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "profileUpdated": "Profile updated"
 }

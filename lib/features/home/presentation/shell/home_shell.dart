@@ -1,24 +1,31 @@
 import 'package:bloc_starter_kit/core/l10n/l10n_setup.dart';
-import 'package:bloc_starter_kit/core/router/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+/// Bottom-tab shell driven by a [StatefulNavigationShell].
+///
+/// Uses `navigationShell.currentIndex`/`goBranch` so each tab keeps its
+/// own navigation stack, per `StatefulShellRoute.indexedStack`.
 class HomeShell extends StatelessWidget {
+  /// Creates the shell around [navigationShell].
   const HomeShell({
-    required this.child,
+    required this.navigationShell,
     super.key,
   });
 
-  final Widget child;
+  /// Shell managing the tab branches.
+  final StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: child,
+      body: navigationShell,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex(context),
-        onDestinationSelected: (index) =>
-            _onDestinationSelected(context, index),
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: (index) => navigationShell.goBranch(
+          index,
+          initialLocation: index == navigationShell.currentIndex,
+        ),
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.home_outlined),
@@ -43,27 +50,5 @@ class HomeShell extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  int _selectedIndex(BuildContext context) {
-    final route = GoRouterState.of(context).uri.path;
-    if (route.startsWith(RoutePaths.notifications)) return 1;
-    if (route.startsWith(RoutePaths.profile)) return 2;
-    if (route.startsWith(RoutePaths.settings)) return 3;
-    return 0;
-  }
-
-  void _onDestinationSelected(BuildContext context, int index) {
-    final router = GoRouter.of(context);
-    switch (index) {
-      case 0:
-        router.go(RoutePaths.home);
-      case 1:
-        router.go(RoutePaths.notifications);
-      case 2:
-        router.go(RoutePaths.profile);
-      case 3:
-        router.go(RoutePaths.settings);
-    }
   }
 }

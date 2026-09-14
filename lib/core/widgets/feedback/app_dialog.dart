@@ -7,25 +7,28 @@ class AppDialog {
     required BuildContext context,
     required String title,
     required String message,
-    String confirmLabel = 'OK',
-    String cancelLabel = 'Cancel',
+    required String confirmLabel,
+    required String cancelLabel,
     bool isDestructive = false,
   }) {
+    final colorScheme = Theme.of(context).colorScheme;
     return showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         shape: const RoundedRectangleBorder(borderRadius: AppBorderRadius.lg),
         title: Text(title),
         content: Text(message),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () => Navigator.of(dialogContext).pop(false),
             child: Text(cancelLabel),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
             style: isDestructive
-                ? TextButton.styleFrom(foregroundColor: Colors.red)
+                ? TextButton.styleFrom(
+                    foregroundColor: colorScheme.error,
+                  )
                 : null,
             child: Text(confirmLabel),
           ),

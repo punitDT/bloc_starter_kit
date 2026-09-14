@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Filled primary action button.
 class PrimaryButton extends StatelessWidget {
+  /// Creates the button.
   const PrimaryButton({
     required this.onPressed,
     required this.label,
@@ -9,7 +11,11 @@ class PrimaryButton extends StatelessWidget {
   });
 
   final VoidCallback? onPressed;
+
+  /// Button label.
   final String label;
+
+  /// Whether to show a spinner instead of [label].
   final bool isLoading;
 
   @override

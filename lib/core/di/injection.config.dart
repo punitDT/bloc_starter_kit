@@ -22,8 +22,16 @@ import 'package:bloc_starter_kit/core/storage/preferences.dart' as _i154;
 import 'package:bloc_starter_kit/core/storage/secure_storage.dart' as _i663;
 import 'package:bloc_starter_kit/features/auth/domain/repositories/auth_repository.dart'
     as _i441;
+import 'package:bloc_starter_kit/features/auth/domain/usecases/login_usecase.dart'
+    as _i496;
+import 'package:bloc_starter_kit/features/auth/domain/usecases/logout_usecase.dart'
+    as _i470;
+import 'package:bloc_starter_kit/features/auth/presentation/bloc/auth_cubit.dart'
+    as _i767;
 import 'package:bloc_starter_kit/features/home/presentation/cubit/home_cubit.dart'
     as _i918;
+import 'package:bloc_starter_kit/features/notifications/presentation/cubit/notifications_cubit.dart'
+    as _i999;
 import 'package:dio/dio.dart' as _i361;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
@@ -49,9 +57,11 @@ extension GetItInjectableX on _i174.GetIt {
     final networkModule = _$NetworkModule();
     final featureModule = _$FeatureModule();
     gh.factory<_i740.DioExceptionMapper>(() => _i740.DioExceptionMapper());
-    gh.singleton<_i20.AppRouter>(() => _i20.AppRouter());
+    gh.lazySingleton<_i20.AppRouter>(
+        () => _i20.AppRouter(gh<_i767.AuthCubit>()));
     gh.lazySingleton<_i207.Talker>(() => appModule.talker);
-    gh.lazySingleton<_i361.Dio>(() => appModule.dio());
+    gh.lazySingleton<_i361.Dio>(
+        () => appModule.dio(gh<_i663.SecureStorage>()));
     await gh.lazySingletonAsync<_i460.SharedPreferences>(
       () => storageModule.prefs,
       preResolve: true,
@@ -72,6 +82,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => featureModule.homeCubit(gh<_i154.Preferences>()));
     gh.lazySingleton<_i441.AuthRepository>(
         () => featureModule.authRepository(gh<_i663.SecureStorage>()));
+    gh.factory<_i496.LoginUseCase>(
+        () => _i496.LoginUseCase(gh<_i441.AuthRepository>()));
+    gh.factory<_i470.LogoutUseCase>(
+        () => _i470.LogoutUseCase(gh<_i441.AuthRepository>()));
+    gh.factory<_i767.AuthCubit>(() => _i767.AuthCubit(
+          gh<_i496.LoginUseCase>(),
+          gh<_i470.LogoutUseCase>(),
+          gh<_i441.AuthRepository>(),
+        ));
+    gh.factory<_i999.NotificationsCubit>(() => _i999.NotificationsCubit());
     return this;
   }
 }

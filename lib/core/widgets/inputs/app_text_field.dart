@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Design-system text field wrapping [TextFormField].
 class AppTextField extends StatelessWidget {
+  /// Creates the field.
   const AppTextField({
     required this.controller,
     required this.label,

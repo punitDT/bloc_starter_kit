@@ -7,6 +7,8 @@ final GetIt getIt = GetIt.instance;
 
 @InjectableInit()
 Future<void> configureDependencies([EnvFlavor flavor = EnvFlavor.dev]) async {
+  // Allowed for widget/bloc tests that re-register fakes after init.
+  // Production code must not re-register; router/cubits are lazy singletons.
   getIt.allowReassignment = true;
   await getIt.init(environment: flavor.name);
 }
